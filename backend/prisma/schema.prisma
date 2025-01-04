@@ -1,0 +1,102 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql" // Use "mysql" if MySQL is chosen.
+  url      = env("DATABASE_URL")
+}
+
+// User model: Handles user authentication and role-based access control
+model User {
+  id                      Int                      @id @default(autoincrement())
+  name                    String
+  email                   String                   @unique
+  password                String
+  role                    Role                     @default(USER) // Application-level role
+  organizationsCreated    Organization[]           @relation("OrganizationsCreated") // Removed fields and references here
+  organizationMemberships OrganizationMembership[] // Renamed from 'Membership' to avoid conflicts
+  createdTasks            Task[]                  @relation("CreatedTasks") // Tasks created by this user
+  assignedTasks           Task[]                  @relation("AssignedTasks") // Tasks assigned to this user
+  activityLogs            ActivityLog[]            // Relation for activity logs performed by this user
+  createdAt               DateTime                 @default(now())
+  updatedAt               DateTime                 @updatedAt
+}
+
+// Role enum: Defines application-level roles
+enum Role {
+  ADMIN
+  USER
+}
+
+// Organization model: Represents a team or group that users can join
+model Organization {
+  id          Int                      @id @default(autoincrement())
+  name        String                   @unique
+  description String
+  creatorId   Int
+  creator     User                     @relation("OrganizationsCreated", fields: [creatorId], references: [id]) // Corrected the reverse relation here
+  members     OrganizationMembership[]  // Renamed from 'Membership' to 'OrganizationMembership'
+  createdAt   DateTime                 @default(now())
+  updatedAt   DateTime                 @updatedAt
+}
+
+// Renamed Membership model to OrganizationMembership
+model OrganizationMembership {
+  id             Int               @id @default(autoincrement())
+  userId         Int
+  organizationId Int
+  user           User              @relation(fields: [userId], references: [id])
+  organization   Organization      @relation(fields: [organizationId], references: [id])
+  role           Role              @default(USER)
+  status         MembershipStatus  @default(PENDING)
+  joinedAt       DateTime          @default(now()) // Made non-optional
+}
+
+enum MembershipStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+// Task model: Represents tasks with fields for title, description, priority, and due date
+model Task {
+  id            Int        @id @default(autoincrement())
+  title         String
+  description   String
+  priority      Priority
+  dueDate       DateTime
+  createdById   Int
+  assignedToId  Int?
+  createdBy     User       @relation("CreatedTasks", fields: [createdById], references: [id])
+  assignedTo    User?      @relation("AssignedTasks", fields: [assignedToId], references: [id])
+  files         File[]
+  logs          ActivityLog[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
+
+model File {
+  id          Int      @id @default(autoincrement())
+  filename    String
+  fileUrl     String   // Cloudinary file URL
+  taskId      Int
+  task        Task     @relation(fields: [taskId], references: [id])
+  uploadedAt  DateTime @default(now())
+}
+
+model ActivityLog {
+  id          Int      @id @default(autoincrement())
+  action      String
+  taskId      Int
+  task        Task     @relation(fields: [taskId], references: [id])
+  performedBy Int
+  user        User     @relation(fields: [performedBy], references: [id])
+  timestamp   DateTime @default(now())
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}
