@@ -1,59 +1,21 @@
 import React from "react";
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  Navigate,
-} from "react-router-dom";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import AdminDashboard from "./pages/AdminDashboard";
-import UserDashboard from "./pages/UserDashboard";
-import { AuthProvider, useAuth } from "./context/AuthContext";
-import Notifications from "./components/Notifications";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Auth from "./components/Auth";
+import Tasks from "./components/Tasks";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
-const ProtectedRoute = ({ children, role }) => {
-  const { user } = useAuth();
-  if (!user) {
-    return <Navigate to="/login" />;
-  }
-  if (role && user.role !== role) {
-    return <Navigate to="/" />;
-  }
-  return children;
-};
-
-const App = () => {
+function App() {
   return (
     <Router>
-      <AuthProvider>
-        <div>
-          <Notifications />
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route
-              path="/admin-dashboard"
-              element={
-                <ProtectedRoute role="Admin">
-                  <AdminDashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/user-dashboard"
-              element={
-                <ProtectedRoute role="User">
-                  <UserDashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route path="/" element={<Navigate to="/login" />} />
-          </Routes>
-        </div>
-      </AuthProvider>
+      <ToastContainer />
+      <Routes>
+        <Route path="/" element={<Auth />} />
+        <Route path="/tasks" element={<Tasks />} />
+      </Routes>
     </Router>
   );
-};
+}
 
 export default App;
