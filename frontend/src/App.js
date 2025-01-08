@@ -8,6 +8,7 @@ import { ToastContainer } from "react-toastify";
 import Login from "./pages/Login";
 import UserDashboard from "./pages/UserDashboard";
 import Register from "./pages/Register";
+import EditTasks from "./components/EditTasks";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/add" element={<Tasks />} />
+        <Route path="/edit/:pid" element={<EditTasks />} />
       </Routes>
     </Router>
   );

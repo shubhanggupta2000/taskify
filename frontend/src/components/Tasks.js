@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { fetchTasks, createTask, deleteTask } from "../api";
-import DatePicker from "react-datepicker";
+import { fetchTasks, createTask, deleteTask, getUsers } from "../api";
+
 const Tasks = () => {
   const [tasks, setTasks] = useState([]);
+  const [users, setUsers] = useState([]);
   const [newTask, setNewTask] = useState({
     title: "",
     description: "",
@@ -13,7 +14,9 @@ const Tasks = () => {
   useEffect(() => {
     const getTasks = async () => {
       const res = await fetchTasks();
+      const userRes = await getUsers();
       setTasks(res.data);
+      setUsers(userRes.data);
     };
     getTasks();
   }, []);

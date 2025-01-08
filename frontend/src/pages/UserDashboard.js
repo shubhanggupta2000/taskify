@@ -16,6 +16,7 @@ const UserDashboard = () => {
 
     fetcher();
   }, []);
+  
   useEffect(() => {
     console.log(tasks);
   });
@@ -50,7 +51,6 @@ const UserDashboard = () => {
                   Logout
                 </Link>
               </li>
-
             </ul>
           </div>
         </div>
@@ -62,10 +62,18 @@ const UserDashboard = () => {
             <div className="card-body">
               <h5 className="card-title">{task.title}</h5>
               <p className="card-text">{task.description}</p>
-              <Link href={`/uploads/${task.filePath}`} download={task.filePath} className="btn btn-primary m-1">
+              <Link
+                href={`/uploads/${task.filePath}`}
+                download={task.filePath}
+                className="btn btn-primary m-1"
+              >
                 Download File
               </Link>
-              {<button className="btn">Edit</button>}
+              {
+                <Link to={`/edit/${task.id}`} className="btn">
+                  Edit
+                </Link>
+              }
             </div>
           </div>
         ))}

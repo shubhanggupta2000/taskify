@@ -107,6 +107,20 @@ const getTasks = async (req, res) => {
   }
 };
 
+const getTasksById = async (req, res) => {
+  console.log(req.params);
+  
+  try {
+    const tasks = await prisma.task.findUnique({
+      where: { id: Number(req.params.id) },
+      include: { createdBy: true, assignedTo: true, files: true, logs: true },
+    });
+    res.status(200).json(tasks);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
 // Update Task
 const updateTask = async (req, res) => {
   try {
@@ -218,4 +232,5 @@ module.exports = {
   updateTask,
   deleteTask,
   uploadTaskFile,
+  getTasksById
 };

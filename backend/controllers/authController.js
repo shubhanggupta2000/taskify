@@ -103,6 +103,33 @@ const getUserProfile = async (req, res) => {
   }
 };
 
+const getUsers = async (req, res) => {
+  try {
+    const userId = req.user.id; // Extracted from the middleware
+
+    // Fetch user profile
+    const user = await prisma.user.findMany({
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 exports.register = async (req, res) => {
   const { email, password, role } = req.body;
   try {
@@ -135,4 +162,5 @@ module.exports = {
   register,
   login,
   getUserProfile,
+  getUsers
 };

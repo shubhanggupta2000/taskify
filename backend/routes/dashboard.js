@@ -7,6 +7,7 @@ const {
   updateTask,
   deleteTask,
   uploadTaskFile,
+  getTasksById,
 } = require("../controllers/taskController");
 const {
   adminDashboard,
@@ -24,9 +25,11 @@ router.get("/user/task/:taskId/files", viewTaskFile);
 // Task Management Routes
 router.post("/tasks", createTask);
 router.post("/tasks/assign", assignTask);
-router.get("/tasks", getTasks);
-router.put("/tasks", updateTask);
-router.delete("/tasks/:id", deleteTask);
+// router.get("/tasks", getTasks);
+// router.get("/tasks/:id", getTasksById);
+
+// router.put("/tasks", updateTask);
+// router.delete("/tasks/:id", deleteTask);
 
 // Upload Task File
 router.post("/tasks/file/upload", uploadTaskFile);
