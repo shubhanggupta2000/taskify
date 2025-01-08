@@ -19,12 +19,12 @@ const createTask = async (req, res) => {
 
     const newTask = await prisma.task.create({
       data: {
-        title: "New Task",
-        description: "This is a new task",
-        priority: "LOW",
+        title: title,
+        description: description,
+        priority: priority,
         createdBy: {
           connect: {
-            id: 1,
+            id: createdById,
           },
         },
         assignedTo: assignedToId ? {
@@ -32,7 +32,7 @@ const createTask = async (req, res) => {
             id: assignedToId,  // Connect the assigned user if there's an assignedToId
           }
         } : null,
-        dueDate: validDueDate || new Date("2025-01-03T21:05:47.926Z"), // Use validDueDate if available
+        dueDate: validDueDate || new Date("2025-01-10T21:05:47.926Z"), // Use validDueDate if available
       }
     });
     
